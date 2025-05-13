@@ -1,0 +1,58 @@
+use{{#sys.query#}} and [METADATA]
+Table: appril  
+Database: silver_db_test  
+Table Type: EXTERNAL_TABLE  
+Input Format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat  
+Output Format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat  
+Serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe  
+Location: s3://catalera-datalake-silver-test/appril/20250429/  
+Stored As: Parquet
+Columns:
+- reg_num (string)
+- reg_type (string): DP, Sec3
+- product_name (string)
+- status (string): Canceled, Conditionally Registered, Registered, Reregistered, Conditionally Reregistered, Reinstated
+- status_desc (string): Active - Conditionally Registered, Active - Conditionally Reregistered, Inactive - Cancelled, Active - Reregistered, Active - Reinstated, Active - Registered
+- status_group (string): active, inactive
+- company_name (string)
+- first_reg_dt (date): This column represents the first registration date of a product, indicating when it was officially entered or approved in the system or registry. The value is stored in date format (typically YYYY-MM-DD), and it can be used to track the initial availability or authorization date of the product in the dataset.
+- status_dt (date): This column indicates the most recent status change date for the product. It captures the date on which the current regulatory, approval, or operational status of the product was last updated in the system. Stored in date format (typically YYYY-MM-DD), it helps track the product’s status lifecycle over time.
+- use_type (string): End Use, Manufacturing Use, Unknown
+- signal_word (string): Warning, Danger, Caution
+- rup_flag (string)
+- rup_reason (string)
+- pesticide_type (string): Different pesticide types. Examples: Biochemical, Plant-Incorp. Protectant, Microbial, Conventional Chemical, Antimicrobial
+- pest_cat (string): pest_cat (string):
+This column denotes the pest category that the product is designed to target or control. It describes the type of pest or organism the product is effective against, helping classify products by their functional use in pest management. The values are stored as strings and may include standardized or domain-specific terminology. Examples: “Biochemical Pesticide”, “Biocide”, “Microbial Pesticide”, “Insecticide”.
+This field is useful for filtering products based on their intended application and can support analyses of pest control trends or regulatory patterns by category.
+- ais (string): This column contains a comma-separated list of active ingredients (AIs) present in the product. Each entry typically includes one or more chemical or biological substances responsible for the product's intended effect (e.g., pest control, plant growth regulation, etc.). These ingredients are key to understanding the function and classification of the product. Examples:, "Neem oil, Azadirachtin", "Glyphosate","Pyrethrin, Piperonyl butoxide"
+- pests (string)
+- sites (string)
+- team (string)
+- pm_email (string)
+- use_pattern (string)
+- transfer_history (string)
+- abns (string)
+- me_too_flag (string)
+- me_too_refs (string)
+- max_label_dt (date)
+- label_dates (string)
+- label_names (string)
+- ai_names (string)
+- ai_percentages (string)
+- ai_pc_codes (string)
+- ai_cas_numbers (string)
+- latest_label_url (string)
+Partition Columns:
+Additional Properties:
+- table_type: ICEBERG
+- owner: arn:aws:iam::813885913418:role/service-role/AWSGlueServiceRole-TestJob
+- created_by: AWS Glue
+- created_at: 2024-04-29 21:37:21 UTC
+
+To generate SQL for querying AWS Athena.
+Only return SQL.
+Example: 
+SELECT DISTINCT(company_name)
+FROM appril
+WHERE LOWER(status_group) = 'active' AND LOWER(pest_cat) LIKE '%something%' AND LOWER(ai_names) LIKE '%whatever%' ORDER BY company_name DESC

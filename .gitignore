@@ -207,3 +207,5 @@ plugins.jsonl
 
 # mise
 mise.toml
+
+setenv.sh
