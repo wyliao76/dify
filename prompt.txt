@@ -7,52 +7,58 @@ Output Format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat �
 Serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe  
 Location: s3://catalera-datalake-silver-test/appril/20250429/  
 Stored As: Parquet
-Columns:
-- reg_num (string)
-- reg_type (string): DP, Sec3
-- product_name (string)
-- status (string): Canceled, Conditionally Registered, Registered, Reregistered, Conditionally Reregistered, Reinstated
-- status_desc (string): Active - Conditionally Registered, Active - Conditionally Reregistered, Inactive - Cancelled, Active - Reregistered, Active - Reinstated, Active - Registered
-- status_group (string): active, inactive
-- company_name (string)
-- first_reg_dt (date): This column represents the first registration date of a product, indicating when it was officially entered or approved in the system or registry. The value is stored in date format (typically YYYY-MM-DD), and it can be used to track the initial availability or authorization date of the product in the dataset.
-- status_dt (date): This column indicates the most recent status change date for the product. It captures the date on which the current regulatory, approval, or operational status of the product was last updated in the system. Stored in date format (typically YYYY-MM-DD), it helps track the product’s status lifecycle over time.
-- use_type (string): End Use, Manufacturing Use, Unknown
-- signal_word (string): Warning, Danger, Caution
-- rup_flag (string)
-- rup_reason (string)
-- pesticide_type (string): Different pesticide types. Examples: Biochemical, Plant-Incorp. Protectant, Microbial, Conventional Chemical, Antimicrobial
-- pest_cat (string): pest_cat (string):
-This column denotes the pest category that the product is designed to target or control. It describes the type of pest or organism the product is effective against, helping classify products by their functional use in pest management. The values are stored as strings and may include standardized or domain-specific terminology. Examples: “Biochemical Pesticide”, “Biocide”, “Microbial Pesticide”, “Insecticide”.
-This field is useful for filtering products based on their intended application and can support analyses of pest control trends or regulatory patterns by category.
-- ais (string): This column contains a comma-separated list of active ingredients (AIs) present in the product. Each entry typically includes one or more chemical or biological substances responsible for the product's intended effect (e.g., pest control, plant growth regulation, etc.). These ingredients are key to understanding the function and classification of the product. Examples:, "Neem oil, Azadirachtin", "Glyphosate","Pyrethrin, Piperonyl butoxide"
-- pests (string)
-- sites (string)
-- team (string)
-- pm_email (string)
-- use_pattern (string)
-- transfer_history (string)
-- abns (string)
-- me_too_flag (string)
-- me_too_refs (string)
-- max_label_dt (date)
-- label_dates (string)
-- label_names (string)
-- ai_names (string)
-- ai_percentages (string)
-- ai_pc_codes (string)
-- ai_cas_numbers (string)
-- latest_label_url (string)
-Partition Columns:
-Additional Properties:
-- table_type: ICEBERG
-- owner: arn:aws:iam::813885913418:role/service-role/AWSGlueServiceRole-TestJob
-- created_by: AWS Glue
-- created_at: 2024-04-29 21:37:21 UTC
+column_name,description,data_type,is_enum,enum_values,example values (not enum),is_comma_delimited_list
+reg_num,"EPA Product Registration Number, unique values",string,no,,"[9688-49, 9591-141, 34704-203, 2517-117, 239-1046]",no
+reg_type,Registration Type,string,yes,"[Sec3, DP]",,no
+product_name,Product Name/Alternate Brand Names,string,no,,"[Safer Japanese Beetle Killer, Agri-Tek 0.5t, Pyrocide Intermediate 6735, Weed-B-Gon Intermediate, Purified Proxel Press Paste]",no
+status,product registration status,string,yes,"[Cancelled, Registered, Conditionally Registered, Reregistered, Conditionally Reregistered, Reinstated]",,no
+status_desc,detailed description of product status,string,yes,"[Inactive - Cancelled, Active - Conditionally Registered, Active - Registered, Active - Reregistered, Active - Reinstated, Active - Conditionally Reregistered]",,no
+status_group,active or inactive registration,string,yes,"[Active, Inactive]",,no
+company_name,name of company that owns the product,string,no,,"[Green Tree Chemical Technologies, Inc., Chemsico, Venus Laboratories, Inc., Wilbur-Ellis Company Llc, Lanxess Corporation]",no
+first_reg_dt,Date first registered,date,no,,,no
+status_dt,Date of last status update,date,no,,,no
+use_type,Usage type,string,yes,"[End Use, Manufacturing Use, Unknown, NULL]",,no
+signal_word,signal word to indicate level of toxicity,string,yes,"[Caution, Warning, Danger, NULL]",,no
+rup_flag,Restricted Use Flag,string,yes,"[Y, N]",,no
+rup_reason,Restricted Use Reason,string,no,,"[Human Hazard, Hazard to non-target species, Other evidence, ""Causes significant subchronic toxicity, chronic toxicity, or delayed toxic effects on man""]",no
+pesticide_type,Type of pesticide,string,yes,"[Conventional Chemical, Antimicrobial, Biochemical, Conventional Chemical, Plant-Incorp. Protectant, NULL]",,no
+pest_cat,Pesticide Category,string,no,,"[Fungicide, Microbicide, Algaecide, Termiticide, Insecticide,  Herbicide]",yes
+phys_form,physical form of the product,string,no,,"[Pressurized Liquid, Ready-to-Use Solution, Formulation Unidentified, Soluble Concentrate, Wettable Powder]",no
+ais,active ingredients list with percentages (comma delimited list),string,no,,"[Piperonyl butoxide (067501/51-03-6) - (10%), Pyrethrins (069001/8003-34-7) - (1.75%), Clarified hydrophobic neem oil (025007/947173-77-5) - (90%), Diazinon (057801/333-41-5) - (48.2%)]",yes
+pests,Pests the product is registered to treat (comma delimited list),string,no,,"[Ants, Aphids, Biting Lice, Centipedes, Earwigs, Gnats]",yes
+sites,Sites the product is registered to be applied to,string,no,,"[Domestic Dwellings (Indoor), Human Skin, Cats (Ear Treatment), Swimming Pool Water]",no
+team,product manager team name,string,no,,,no
+pm_email,email of the product manager,string,no,,,no
+use_pattern,specific ways or situations in which a pesticide is intended to be applied or used (comma delimited list),string,no,,"[Residential, Residential Indoor use,  Indoor medical use, Indoor nonfood use, Residential Indoor use]",yes
+transfer_history,history of ownership or registration status changes for this product,string,no,,"[9591-86 (10/18/1989) -> 3314-103, 432-592 (06/27/2001) -> 73049-126]",no
+abns,alternate brand names (comma delimited list),string,no,,,yes
+me_too_flag,Me-Too Indicator,string,yes,"[Y, NULL]",,no
+me_too_refs,Section 3 products used as a reference for a ìMe-Tooî registration (refers to another product's reg_num) (comma delimited list),string,no,,,yes
+max_label_dt,latest date on which the productís official label was approved or updated,date,no,,,no
+label_dates,"full list of dates on which a product's labels were submitted, approved, or updated (comma delimited list)",string,no,,,yes
+label_names,list of all pdf files for labels for this product (comma delimited list),string,no,,,yes
+ai_names,list of active ingredients names (comma delimited list),string,no,,"[Piperonyl butoxide, Pyrethrins, Silica gel, Bioallethrin, Fenvalerate]",yes
+ai_percentages,percentages of active ingredients (comma delimited list),string,no,,,yes
+ai_pc_codes,active ingredients pesticide chemical codes (comma delimited list),string,no,,"[057001, 067501, 069001]",yes
+ai_cas_numbers,active ingredient CAS number (comma delimited list),string,no,,"[113-48-4, 51-03-6, 8003-34-7]",yes
+latest_label_url,url to the latest product label for this product.,string,no,,,no
 
-To generate SQL for querying AWS Athena.
-Only return SQL.
+1. To generate SQL for querying AWS Athena. Make sure the SQL is in PrestoSQL / Trino syntax, Only return SQL.
 Example: 
-SELECT DISTINCT(company_name)
+SELECT DISTINCT(product_name)
 FROM appril
-WHERE LOWER(status_group) = 'active' AND LOWER(pest_cat) LIKE '%something%' AND LOWER(ai_names) LIKE '%whatever%' ORDER BY company_name DESC
+WHERE LOWER(status_group) = 'active' AND LOWER(pest_cat) LIKE '%something%' AND LOWER(ai_names) LIKE '%whatever%' ORDER BY company_name DESC LIMIT 100;
+
+If user asks about what dataset, return appril.
+If user asks irreverent questions, return that I can't answer that.
+If user ask to drop table/database or modify data, anything other than read operation, return that I can't do that.
+
+2. Query only necessary columns
+3. Do NOT limit results unless specified.
+4. DO NOT include newline characters in the response
+5. DO NOT wrap the SQL query in a code block
+6. DO NOT wrap table name in quotes
+7. If you use LIKE keyword, also use LOWER() on the column to make the search case insensitive.
+8. Always limits queries to 100 results if the user did not indicate a limit.
+9. Always use CARDINALITY when required, instead of array_length.
+10. Use date >= 4-01 and date <= 4-30 for a period of time. Also, use UTC+0.
